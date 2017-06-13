@@ -53,9 +53,9 @@ This format is suitable for [Operational Transform](https://en.wikipedia.org/wik
 
 #### Operations
 
-- [insert](#insert-operation)
-- [delete](#delete-operation)
-- [retain](#retain-operation)
+- [`insert`](#insert-operation)
+- [`delete`](#delete-operation)
+- [`retain`](#retain-operation)
 
 #### Construction
 
@@ -166,7 +166,7 @@ Creates a new Delta object.
 - `ops` - Array of operations
 - `delta` - Object with an `ops` key set to an array of operations
 
-*Note: No validity/sanity check is performed when constructed with ops or delta. The new delta's internal ops array will also be assigned to ops or delta.ops without deep copying.*
+*Note: No validity/sanity check is performed when constructed with ops or delta. The new delta's internal ops array will also be assigned from ops or delta.ops without deep copying.*
 
 #### Example
 
@@ -337,14 +337,15 @@ var delta = new Delta().insert('Hello\n\n')
                        .insert('\n', { align: 'right' })
                        .insert('!');
 
-delta.eachline(function(line, attributes) {
-  console.log(line, attributes);
+delta.eachline(function(line, attributes, i) {
+  console.log(line, attributes, i);
+  // Can return false to exit loop early
 });
 // Should log:
-// { ops: [{ insert: 'Hello' }] }, {}
-// { ops: [] }, {}
-// { ops: [{ insert: 'World' }, { insert: { image: 'octocat.png' } }] }, { align: 'right' }
-// { ops: [{ insert: '!' }] }, {}
+// { ops: [{ insert: 'Hello' }] }, {}, 0
+// { ops: [] }, {}, 1
+// { ops: [{ insert: 'World' }, { insert: { image: 'octocat.png' } }] }, { align: 'right' }, 2
+// { ops: [{ insert: '!' }] }, {}, 3
 ```
 
 
